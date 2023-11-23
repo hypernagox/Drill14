@@ -9,14 +9,30 @@ class FixedBackground:
     def __init__(self):
         self.image = load_image('futsal_court.png')
         # fill here
+        self.cw = get_canvas_width() # 화면의 너비
+        self.ch = get_canvas_height() # 화면의 너비
+        self.w = self.image.w # 이미지의 너비와 높이
+        self.h = self.image.h
         pass
 
     def draw(self):
         # fill here
+        # 클리핑되고 시작 영역 (left,bottom) , 크기는 화면의 너비와 높이
+        # 너비 픽셀이 홀수여야 중심으로 정확히 간다
+        # to origin 함수는 피벗을 좌하단으로 보낸다.
+        self.image.clip_draw_to_origin(
+            self.window_left, self.window_bottom, self.cw, self.ch,
+            0, 0
+        )
         pass
 
     def update(self):
         # fill here
+        self.window_left =  int(server.boy.x) - self.cw // 2 # 소년의 좌표에서 캔버스 크기 //2 를뺀다
+        self.window_bottom = int(server.boy.y) - self.ch // 2
+
+        self.window_left = clamp(0,self.window_left ,self.w - self.cw - 1) # 윈도우 left 최소값 0 , 최대값은 전체이미지 너비에서 캔버스 너비만큼 뺀것이 최대값
+        self.window_bottom = clamp(0, self.window_bottom, self.h - self.ch - 1)  #윈도우 바텀 최대값 이미지 높이 - 캔버스 높이
         pass
 
     def handle_event(self, event):
